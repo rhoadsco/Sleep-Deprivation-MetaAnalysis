@@ -10,6 +10,7 @@ library(plyr)
 library(metafor)
 library(reshape)
 library(multtest)
+library(dplyr)
 
 ### Section 2: Functions
 ### None of these functions have been changed to be specific to this meta-analysis.
@@ -40,6 +41,7 @@ FilteringDEResults_GoodAnnotation<-function(TempResultsJoined){
     TempResultsJoined_NoNA_NoMultimapped<<-TempResultsJoined_NoNA[-(grep('\\|', TempResultsJoined_NoNA$Gene_Symbol)),]
     print("# of rows with good annotation")
     print(nrow(TempResultsJoined_NoNA_NoMultimapped))
+    write.csv(TempResultsJoined_NoNA, "TempResultsJoined_NoNA.csv")
     write.csv(TempResultsJoined_NoNA_NoMultimapped, "TempResultsJoined_NoNA_NoMultimapped.csv")
     rm(TempResultsJoined_NoNA, TempResultsJoined_NoNA_NoMultimapped)
     print("Outputted object: TempResultsJoined_NoNA_NoMultimapped")
@@ -260,7 +262,7 @@ MakeForestPlots<-function(GeneSymbol){
 # Meta-Analysis on Sleep Deprivation
 
 #GSE6514, Mackiewicz, Miroslaw et al.
-setwd("~/Library/Mobile Documents/com~apple~CloudDocs/UMich Summer Internship/R Coding for Meta Analysis/GSE6514/11418_GSE6514_diffExpAnalysis_92880")
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/GSE6514/11418_GSE6514_diffExpAnalysis_92880")
 list.files()
 # [1] "analysis.results.txt"                                                    
 # [2] "resultset_ID477377.data.txt"                                             
@@ -270,7 +272,7 @@ FilteringDEResults_GoodAnnotation(TempResultsJoined)
 CollapsingDEResults_OneResultPerGene(GSE_ID="GSE6514", TempResultsJoined_NoNA_NoMultimapped, ComparisonsOfInterest=c("6 h SD vs. GSE6514 ctrl", "9 h SD vs. GSE6514 ctrl", "12 h SD vs. GSE6514 ctrl"), NamesOfFoldChangeColumns=list(TempResultsJoined_NoNA_NoMultimapped$FoldChange_6.h, TempResultsJoined_NoNA_NoMultimapped$FoldChange_9.h, TempResultsJoined_NoNA_NoMultimapped$FoldChange_12.h), NamesOfTstatColumns = list(TempResultsJoined_NoNA_NoMultimapped$Tstat_6.h, TempResultsJoined_NoNA_NoMultimapped$Tstat_9.h, TempResultsJoined_NoNA_NoMultimapped$Tstat_12.h))
 
 #GSE33491, Hinard, Valérie et al.
-setwd("~/Library/Mobile Documents/com~apple~CloudDocs/UMich Summer Internship/R Coding for Meta Analysis/GSE33491/13786_GSE33491_diffExpAnalysis_99952")
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/GSE33491/13786_GSE33491_diffExpAnalysis_99952")
 list.files()
 # [1] "analysis.results.txt"                                                    
 # [2] "resultset_ID480876.data.txt"    
@@ -279,7 +281,7 @@ FilteringDEResults_GoodAnnotation(TempResultsJoined)
 CollapsingDEResults_OneResultPerGene(GSE_ID="GSE33491", TempResultsJoined_NoNA_NoMultimapped, ComparisonsOfInterest=c("6 h SD vs. GSE33491 ctrl", "6 h SD, 18 h RS vs. GSE33491 ctrl"), NamesOfFoldChangeColumns=list(TempResultsJoined_NoNA_NoMultimapped$FoldChange_sleep.deprivation, TempResultsJoined_NoNA_NoMultimapped$FoldChange_sleep.deprivation.for.6.h.and.recovery.for.18.h), NamesOfTstatColumns = list(TempResultsJoined_NoNA_NoMultimapped$Tstat_sleep.deprivation, TempResultsJoined_NoNA_NoMultimapped$Tstat_sleep.deprivation.for.6.h.and.recovery.for.18.h))
 
 #GSE78215, Gerstner, Jason R et al.
-setwd("~/Library/Mobile Documents/com~apple~CloudDocs/UMich Summer Internship/R Coding for Meta Analysis/GSE78215/12969_GSE78215_diffExpAnalysis_99294")
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/GSE78215/12969_GSE78215_diffExpAnalysis_99294")
 list.files()
 # [1] "analysis.results.txt"                                                    
 # [2] "resultset_ID480552.data.txt"                                             
@@ -290,7 +292,7 @@ FilteringDEResults_GoodAnnotation(TempResultsJoined)
 CollapsingDEResults_OneResultPerGene(GSE_ID="GSE78215", TempResultsJoined_NoNA_NoMultimapped, ComparisonsOfInterest=c("6 h SD, 1 h RS vs. GSE78215 ctrl", "6 h SD, 2 h RS vs. GSE78215 ctrl", "5 h SD, 3 h RS vs. GSE78215 ctrl", "5 h SD, 6 h RS vs. GSE78215 ctrl"), NamesOfFoldChangeColumns=list(TempResultsJoined_NoNA_NoMultimapped$FoldChange_1.h, TempResultsJoined_NoNA_NoMultimapped$FoldChange_2.h, TempResultsJoined_NoNA_NoMultimapped$FoldChange_3.h, TempResultsJoined_NoNA_NoMultimapped$FoldChange_6.h), NamesOfTstatColumns = list(TempResultsJoined_NoNA_NoMultimapped$Tstat_1.h, TempResultsJoined_NoNA_NoMultimapped$Tstat_2.h, TempResultsJoined_NoNA_NoMultimapped$Tstat_3.h, TempResultsJoined_NoNA_NoMultimapped$Tstat_6.h))
 
 #GSE93041, Orozco-Solis, Ricardo et al. 
-setwd("~/Library/Mobile Documents/com~apple~CloudDocs/UMich Summer Internship/R Coding for Meta Analysis/GSE93041/13143_GSE93041_diffExpAnalysis_100030")
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/GSE93041/13143_GSE93041_diffExpAnalysis_100030")
 list.files()
 # [1] "analysis.results.txt"                                                    
 # [2] "resultset_ID480918.data.txt" 
@@ -299,7 +301,7 @@ FilteringDEResults_GoodAnnotation(TempResultsJoined)
 CollapsingDEResults_OneResultPerGene(GSE_ID="GSE93041", TempResultsJoined_NoNA_NoMultimapped, ComparisonsOfInterest=c("12 h SD vs. GSE93041 ctrl"), NamesOfFoldChangeColumns=list(TempResultsJoined_NoNA_NoMultimapped$FoldChange_sleep.deprivation), NamesOfTstatColumns = list(TempResultsJoined_NoNA_NoMultimapped$Tstat_sleep.deprivation))
 
 #GSE113754, Ingiosi, Ashley M et al.
-setwd("~/Library/Mobile Documents/com~apple~CloudDocs/UMich Summer Internship/R Coding for Meta Analysis/GSE113754/15159_GSE113754_diffExpAnalysis_164400")
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/GSE113754/15159_GSE113754_diffExpAnalysis_164400")
 list.files()
 # [1] "analysis.results.txt"                                                    
 # [2] "resultset_ID494159.data.txt"                                             
@@ -309,7 +311,7 @@ FilteringDEResults_GoodAnnotation(TempResultsJoined)
 CollapsingDEResults_OneResultPerGene(GSE_ID="GSE113754", TempResultsJoined_NoNA_NoMultimapped, ComparisonsOfInterest=c("5 h SD vs. GSE113754 ctrl"), NamesOfFoldChangeColumns=list(TempResultsJoined_NoNA_NoMultimapped$FoldChange_Sleep.deprivation.5h.), NamesOfTstatColumns = list(TempResultsJoined_NoNA_NoMultimapped$Tstat_Sleep.deprivation.5h.))
 
 #GSE128770, Guo, Xiaofeng et al.
-setwd("~/Library/Mobile Documents/com~apple~CloudDocs/UMich Summer Internship/R Coding for Meta Analysis/GSE128770/15623_GSE128770_diffExpAnalysis_131464")
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/GSE128770/15623_GSE128770_diffExpAnalysis_131464")
 list.files()
 # [1] "analysis.results.txt"                                                    
 # [2] "resultset_ID490841.data.txt"                                             
@@ -320,7 +322,7 @@ FilteringDEResults_GoodAnnotation(TempResultsJoined)
 CollapsingDEResults_OneResultPerGene(GSE_ID="GSE128770", TempResultsJoined_NoNA_NoMultimapped, ComparisonsOfInterest=c("3 h SD vs. GSE128770 ctrl", "6 h SD vs. GSE128770 ctrl", "9 h SD vs. GSE128770 ctrl", "12 h SD vs. GSE128770 ctrl"), NamesOfFoldChangeColumns=list(TempResultsJoined_NoNA_NoMultimapped$FoldChange_3.h, TempResultsJoined_NoNA_NoMultimapped$FoldChange_6.h, TempResultsJoined_NoNA_NoMultimapped$FoldChange_9.h, TempResultsJoined_NoNA_NoMultimapped$FoldChange_12.h), NamesOfTstatColumns = list(TempResultsJoined_NoNA_NoMultimapped$Tstat_3.h, TempResultsJoined_NoNA_NoMultimapped$Tstat_6.h, TempResultsJoined_NoNA_NoMultimapped$Tstat_9.h, TempResultsJoined_NoNA_NoMultimapped$Tstat_12.h))
 
 #GSE132076, Muheim, Christine M et al.
-setwd("~/Library/Mobile Documents/com~apple~CloudDocs/UMich Summer Internship/R Coding for Meta Analysis/GSE132076/17237_GSE132076_diffExpAnalysis_176993")
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/GSE132076/17237_GSE132076_diffExpAnalysis_176993")
 list.files()
 # [1] "analysis.results.txt"                                                    
 # [2] "resultset_ID499390.data.txt"                                             
@@ -330,7 +332,7 @@ FilteringDEResults_GoodAnnotation(TempResultsJoined)
 CollapsingDEResults_OneResultPerGene(GSE_ID="GSE132076", TempResultsJoined_NoNA_NoMultimapped, ComparisonsOfInterest=c("4 h SD vs. GSE132076 ctrl"), NamesOfFoldChangeColumns=list(TempResultsJoined_NoNA_NoMultimapped$FoldChange_Sleep.deprivation), NamesOfTstatColumns = list(TempResultsJoined_NoNA_NoMultimapped$Tstat_Sleep.deprivation))
 
 #GSE144957, Bjorness, Theresa E et al.
-setwd("~/Library/Mobile Documents/com~apple~CloudDocs/UMich Summer Internship/R Coding for Meta Analysis/GSE144957/17613_GSE144957_diffExpAnalysis_168449")
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/GSE144957/17613_GSE144957_diffExpAnalysis_168449")
 list.files()
 # [1] "analysis.results.txt"                                                    
 # [2] "resultset_ID495477.data.txt"                                             
@@ -344,7 +346,7 @@ CollapsingDEResults_OneResultPerGene(GSE_ID="GSE144957", TempResultsJoined_NoNA_
 ### This section is where, using the functions in section 2, we run the meta-analysis on the data from section 3. 
 
 # setwd to a file where you will store results
-setwd("~/Library/Mobile Documents/com~apple~CloudDocs/UMich Summer Internship/R Coding for Meta Analysis/Results")
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/Results")
 # define ListOfDEResults as the DEResults_GemmaID files created in Section 3.
 ListOfDEResults <- list(DEResults_GSE113754, DEResults_GSE128770, DEResults_GSE132076, DEResults_GSE144957, DEResults_GSE144957, DEResults_GSE33491, DEResults_GSE6514, DEResults_GSE78215, DEResults_GSE93041)
 AligningDatasets(ListOfDEResults)
@@ -352,7 +354,7 @@ AligningDatasets(ListOfDEResults)
 NumberOfComparisons=18
 CutOffForNAs=5
 # First, we run a basic meta analysis with no covariates and an FDR correction. This basic meta analysis function is our confirmatory analysis. This function takes a while to run. Set the wd to a specific file location.
-setwd("~/Library/Mobile Documents/com~apple~CloudDocs/UMich Summer Internship/R Coding for Meta Analysis/Results/BasicMetaAnalysis")
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/Results/BasicMetaAnalysis")
 metaOutput<-RunBasicMetaAnalysis(NumberOfComparisons, CutOffForNAs, MetaAnalysis_FoldChanges, MetaAnalysis_SV)
 FalseDiscoveryCorrection(metaOutput)
 # Second, we can define covariates of interest. We began with duration of sleep deprivation and duration of recovery sleep, then tried duration of sleep deprivation with the existence recovery sleep as a categorical variable. The covariates are created by giving each comparison (in this case, all 18 comparisons) one value. This must be in the same order as the MetaAnalysis_FoldChanges object's columns, as so:
@@ -383,12 +385,12 @@ DurationRS<- RS_uncentered - mean(RS_uncentered)
 #ExistenceRS has 0 = no RS, 1 = yes RS
 ExistenceRS<- as.factor(c(0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0))
 # Third, we run a meta analysis with covariates and its FDR correction as an exploratory analysis. This function also takes a while to run. This includes two meta-analyses run with covariates as specified above. Again, set the wd to a specific file location.
-setwd("~/Library/Mobile Documents/com~apple~CloudDocs/UMich Summer Internship/R Coding for Meta Analysis/Results/MetaAnalysis_DurationSD vs. DurationRS")
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/Results/MetaAnalysis_DurationSD vs. DurationRS")
 Predictor1<-DurationSD
 Predictor2<-DurationRS
 metaOutputWTC<-RunMetaAnalysisWTC(NumberOfComparisons, CutOffForNAs, MetaAnalysis_FoldChanges, MetaAnalysis_SV)
 FalseDiscoveryCorrectionWTC(metaOutputWTC)
-setwd("~/Library/Mobile Documents/com~apple~CloudDocs/UMich Summer Internship/R Coding for Meta Analysis/Results/MetaAnalysis_DurationSD vs. ExistenceRS")
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/Results/MetaAnalysis_DurationSD vs. ExistenceRS")
 Predictor1<-DurationSD
 Predictor2<-ExistenceRS
 metaOutputWTC<-RunMetaAnalysisWTC(NumberOfComparisons, CutOffForNAs, MetaAnalysis_FoldChanges, MetaAnalysis_SV)
@@ -398,3 +400,99 @@ FalseDiscoveryCorrectionWTC(metaOutputWTC)
 ### Section 5: Visualizing the Data and Results
 cor(as.matrix(MetaAnalysis_FoldChanges[,-1]), use="pairwise.complete.obs")
 heatmap(cor(as.matrix(MetaAnalysis_FoldChanges[,-1]), use="pairwise.complete.obs"))
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/Results/ForestPlots")
+MakeForestPlots("Slc12a6")
+MakeForestPlots("Thg1l")
+MakeForestPlots("B3gnt3")
+MakeForestPlots("Vps26c")
+MakeForestPlots("Fancf")
+MakeForestPlots("Hspa12b")
+MakeForestPlots("Nr3c1")
+MakeForestPlots("Gmeb1")
+MakeForestPlots("Ddx51")
+MakeForestPlots("Nr2e1")
+MakeForestPlots("Gm14285")
+MakeForestPlots("Exosc4")
+MakeForestPlots("Tmod3")
+MakeForestPlots("Rimoc1")
+MakeForestPlots("Cdc42ep3")
+MakeForestPlots("4931429L15Rik")
+MakeForestPlots("Cd7")
+MakeForestPlots("Lrrc75a")
+MakeForestPlots("Wdr61")
+
+### Section 6: What Matters? Exploring the code to see how our analysis choices affect our results.
+
+##finding the gene symbols that are repeated.
+#GSE6514
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/GSE6514/11418_GSE6514_diffExpAnalysis_92880")
+GSE6514_raw<-read.csv("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/GSE6514/11418_GSE6514_diffExpAnalysis_92880/TempResultsJoined_NoNA.csv")
+GSE6514_raw_sorted <- GSE6514_raw[order(GSE6514_raw$Gene_Symbol),]
+write.csv(GSE6514_raw_sorted, "GSE6514_raw_sorted.csv")
+GSE6514_unique<-unique(GSE6514_raw_sorted$Gene_Symbol[duplicated(GSE6514_raw_sorted$Gene_Symbol) | duplicated(GSE6514_raw_sorted$Gene_Symbol, fromLast=TRUE)])
+#GSE33491
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/GSE33491/13786_GSE33491_diffExpAnalysis_99952")
+GSE33491_raw<-read.csv("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/GSE33491/13786_GSE33491_diffExpAnalysis_99952/TempResultsJoined_NoNA.csv")
+GSE33491_raw_sorted <- GSE33491_raw[order(GSE33491_raw$Gene_Symbol),]
+write.csv(GSE33491_raw_sorted, "GSE33491_raw_sorted.csv")
+GSE33491_unique<-unique(GSE33491_raw_sorted$Gene_Symbol[duplicated(GSE33491_raw_sorted$Gene_Symbol) | duplicated(GSE33491_raw_sorted$Gene_Symbol, fromLast=TRUE)])
+#GSE78215
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/GSE78215/12969_GSE78215_diffExpAnalysis_99294")
+GSE78215_raw<-read.csv("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/GSE78215/12969_GSE78215_diffExpAnalysis_99294/TempResultsJoined_NoNA.csv")
+GSE78215_raw_sorted <- GSE78215_raw[order(GSE78215_raw$Gene_Symbol),]
+write.csv(GSE78215_raw_sorted, "GSE78215_raw_sorted.csv")
+GSE78215_unique<-unique(GSE78215_raw_sorted$Gene_Symbol[duplicated(GSE78215_raw_sorted$Gene_Symbol) | duplicated(GSE78215_raw_sorted$Gene_Symbol, fromLast=TRUE)])
+#GSE93041
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/GSE93041/13143_GSE93041_diffExpAnalysis_100030")
+GSE93041_raw<-read.csv("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/GSE93041/13143_GSE93041_diffExpAnalysis_100030/TempResultsJoined_NoNA.csv")
+GSE93041_raw_sorted <- GSE93041_raw[order(GSE93041_raw$Gene_Symbol),]
+write.csv(GSE93041_raw_sorted, "GSE93041_raw_sorted.csv")
+GSE93041_unique<-unique(GSE93041_raw_sorted$Gene_Symbol[duplicated(GSE93041_raw_sorted$Gene_Symbol) | duplicated(GSE93041_raw_sorted$Gene_Symbol, fromLast=TRUE)])
+#GSE113754
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/GSE113754/15159_GSE113754_diffExpAnalysis_164400")
+GSE113754_raw<-read.csv("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/GSE113754/15159_GSE113754_diffExpAnalysis_164400/TempResultsJoined_NoNA.csv")
+GSE113754_raw_sorted <- GSE113754_raw[order(GSE113754_raw$Gene_Symbol),]
+write.csv(GSE113754_raw_sorted, "GSE113754_raw_sorted.csv")
+GSE113754_unique<-unique(GSE113754_raw_sorted$Gene_Symbol[duplicated(GSE113754_raw_sorted$Gene_Symbol) | duplicated(GSE113754_raw_sorted$Gene_Symbol, fromLast=TRUE)])
+#GSE128770
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/GSE128770/15623_GSE128770_diffExpAnalysis_131464")
+GSE128770_raw<-read.csv("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/GSE128770/15623_GSE128770_diffExpAnalysis_131464/TempResultsJoined_NoNA.csv")
+GSE128770_raw_sorted <- GSE128770_raw[order(GSE128770_raw$Gene_Symbol),]
+write.csv(GSE128770_raw_sorted, "GSE128770_raw_sorted.csv")
+GSE128770_unique<-unique(GSE128770_raw_sorted$Gene_Symbol[duplicated(GSE128770_raw_sorted$Gene_Symbol) | duplicated(GSE128770_raw_sorted$Gene_Symbol, fromLast=TRUE)])
+#GSE132076
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/GSE132076/17237_GSE132076_diffExpAnalysis_176993")
+GSE132076_raw<-read.csv("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/GSE132076/17237_GSE132076_diffExpAnalysis_176993/TempResultsJoined_NoNA.csv")
+GSE132076_raw_sorted <- GSE132076_raw[order(GSE132076_raw$Gene_Symbol),]
+write.csv(GSE132076_raw_sorted, "GSE132076_raw_sorted.csv")
+GSE132076_unique<-unique(GSE132076_raw_sorted$Gene_Symbol[duplicated(GSE132076_raw_sorted$Gene_Symbol) | duplicated(GSE132076_raw_sorted$Gene_Symbol, fromLast=TRUE)])
+#GSE144957
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/GSE144957/17613_GSE144957_diffExpAnalysis_168449")
+GSE144957_raw<-read.csv("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/GSE144957/17613_GSE144957_diffExpAnalysis_168449/TempResultsJoined_NoNA.csv")
+GSE144957_raw_sorted <- GSE144957_raw[order(GSE144957_raw$Gene_Symbol),]
+write.csv(GSE144957_raw_sorted, "GSE144957_raw_sorted.csv")
+GSE144957_unique<-unique(GSE144957_raw_sorted$Gene_Symbol[duplicated(GSE144957_raw_sorted$Gene_Symbol) | duplicated(GSE144957_raw_sorted$Gene_Symbol, fromLast=TRUE)])
+#all_repeated_genesymbols is a list of all the gene symbols that are duplicated in any of the 7 datasets.
+# note: it could be good to functionalize all of the code above. Ask Dr. H about that.
+all_repeated_genesymbols<-unique(c(GSE132076_unique,GSE128770_unique,GSE113754_unique,GSE93041_unique,GSE78215_unique,GSE33491_unique,GSE6514_unique))
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/Results")
+metaOutputFDR_dataright<-read.csv("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/Results/BasicMetaAnalysis/metaOutputFDR.csv")
+metaOutputFDR_sig<-filter(metaOutputFDR_dataright, metaOutputFDR_dataright$FDR < 0.1)
+all_significant_genesymbols<-(metaOutputFDR_sig$X)
+#print(all_repeated_genesymbols)
+#print(all_significant_genesymbols)
+y<-logical()
+for (x in 1:length(all_repeated_genesymbols)) {
+    y = c(y, all_repeated_genesymbols[[x]] %in% all_significant_genesymbols)
+}
+proportion_sig <- (sum(y, na.rm=TRUE))/(length(all_significant_genesymbols))
+proportion_all <- (length(all_repeated_genesymbols))/(length(unique(metaOutputFDR_dataright$X)))
+H <- c(proportion_sig,proportion_all)
+M <- c("genes from significant results", "all genes")
+barplot(H,ylab="Proportion of Genes that are Multimapped",names.arg=M, ylim= c(0,1))
+print ("proportion of statistically significant genes that had more than one probe per gene symbol: ") 
+print (proportion_sig)
+print ("proportion of all genes that had more than one probe per gene symbol: ")
+print (proportion_all)
+
+
