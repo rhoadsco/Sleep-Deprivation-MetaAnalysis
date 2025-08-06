@@ -1,6 +1,6 @@
 ## Author: Cosette Rhoads, code originally from Dr. Hagenauer (hagenaue on Github)
 ## Date: July 28, 2022
-## Last Updated: March 27, 2023
+## Last Updated: April 27, 2023
 ## UPDATE THIS WITH sessionInfo()
 ## Title: Meta-Analysis Code for Sleep Deprivation Project
 
@@ -11,6 +11,7 @@ library(metafor)
 library(reshape)
 library(multtest)
 library(dplyr)
+library(fgsea)
 
 ### Section 2: Functions
 ### None of these functions have been changed to be specific to this meta-analysis.
@@ -355,7 +356,45 @@ NumberOfComparisons=18
 CutOffForNAs=5
 # First, we run a basic meta analysis with no covariates and an FDR correction. This basic meta analysis function is our confirmatory analysis. This function takes a while to run. Set the wd to a specific file location.
 setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/Results/BasicMetaAnalysis")
+colnames(MetaAnalysis_FoldChanges) <- c("x",
+                                                "GSE113754.5hSD",
+                                                "GSE128770.3hSD",
+                                                "GSE128770.6hSD",
+                                                "GSE128770.9hSD",
+                                                "GSE128770.12hSD",
+                                                "GSE132076.4hSD",
+                                                "GSE144957.6hSD",
+                                                "GSE144957.4hSD.2hRS",
+                                                "GSE33491.6hSD",
+                                                "GSE33491.6hSD.18hRS",
+                                                "GSE6514.6hSD",
+                                                "GSE6514.9hSD",
+                                                "GSE6514.12hSD",
+                                                "GSE78215.6hSD.1hRS",
+                                                "GSE78215.6hSD.2hRS",
+                                                "GSE78215.5hSD.3hRS",
+                                                "GSE78215.5hSD.6hRS",
+                                                "GSE93041.12hSD")
 metaOutput<-RunBasicMetaAnalysis(NumberOfComparisons, CutOffForNAs, MetaAnalysis_FoldChanges, MetaAnalysis_SV)
+colnames(MetaAnalysis_FoldChanges_ForMeta) <- c("x",
+                                                "GSE113754.5hSD",
+                                                "GSE128770.3hSD",
+                                                "GSE128770.6hSD",
+                                                "GSE128770.9hSD",
+                                                "GSE128770.12hSD",
+                                                "GSE132076.4hSD",
+                                                "GSE144957.6hSD",
+                                                "GSE144957.4hSD.2hRS",
+                                                "GSE33491.6hSD",
+                                                "GSE33491.6hSD.18hRS",
+                                                "GSE6514.6hSD",
+                                                "GSE6514.9hSD",
+                                                "GSE6514.12hSD",
+                                                "GSE78215.6hSD.1hRS",
+                                                "GSE78215.6hSD.2hRS",
+                                                "GSE78215.5hSD.3hRS",
+                                                "GSE78215.5hSD.6hRS",
+                                                "GSE93041.12hSD")
 FalseDiscoveryCorrection(metaOutput)
 # Second, we can define covariates of interest. We began with duration of sleep deprivation and duration of recovery sleep, then tried duration of sleep deprivation with the existence recovery sleep as a categorical variable. The covariates are created by giving each comparison (in this case, all 18 comparisons) one value. This must be in the same order as the MetaAnalysis_FoldChanges object's columns, as so:
 # colnames(MetaAnalysis_FoldChanges)
@@ -397,31 +436,171 @@ metaOutputWTC<-RunMetaAnalysisWTC(NumberOfComparisons, CutOffForNAs, MetaAnalysi
 FalseDiscoveryCorrectionWTC(metaOutputWTC)
 
 
+
+
+
+
+
+
+
+
+
+
 ### Section 5: Visualizing the Data and Results
 cor(as.matrix(MetaAnalysis_FoldChanges[,-1]), use="pairwise.complete.obs")
 heatmap(cor(as.matrix(MetaAnalysis_FoldChanges[,-1]), use="pairwise.complete.obs"))
-setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/Results/ForestPlots")
-MakeForestPlots("Slc12a6")
-MakeForestPlots("Thg1l")
-MakeForestPlots("B3gnt3")
-MakeForestPlots("Vps26c")
-MakeForestPlots("Fancf")
-MakeForestPlots("Hspa12b")
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/Results/newfigs")
 MakeForestPlots("Nr3c1")
-MakeForestPlots("Gmeb1")
-MakeForestPlots("Ddx51")
-MakeForestPlots("Nr2e1")
-MakeForestPlots("Gm14285")
-MakeForestPlots("Exosc4")
-MakeForestPlots("Tmod3")
-MakeForestPlots("Rimoc1")
-MakeForestPlots("Cdc42ep3")
-MakeForestPlots("4931429L15Rik")
 MakeForestPlots("Cd7")
-MakeForestPlots("Lrrc75a")
-MakeForestPlots("Wdr61")
+MakeForestPlots("Pawr")
 
-### Section 6: What Matters? Exploring the code to see how our analysis choices affect our results.
+
+MakeForestPlots("Nr2e1")
+MakeForestPlots("Frem2")
+MakeForestPlots("Ift140")
+MakeForestPlots("Prrx1")
+MakeForestPlots("Prr5")
+MakeForestPlots("Mrpl30")
+MakeForestPlots("Ahcy")
+MakeForestPlots("Ntrk2")
+MakeForestPlots("Cort")
+MakeForestPlots("Htr2a")
+MakeForestPlots("Vip")
+MakeForestPlots("Tac1")
+MakeForestPlots("Mchr1")
+MakeForestPlots("Hcrtr1")
+MakeForestPlots("Npy1r")
+MakeForestPlots("Sorcs3")
+MakeForestPlots("Il17rb")
+MakeForestPlots("Zbtb16")
+MakeForestPlots("Hspa12b")
+
+###Heatmap
+library(pheatmap)
+library(dichromat)
+library(plyr)
+
+
+DE_Results<-data.frame(metaOutputFDR_OrderbyPval)
+HeatMap<-function(DE_Results_forHM, ContrastData_forHM){
+DE_Results_forHM$x<-rownames(DE_Results_forHM)
+metaOutputFDR_wFoldChanges <- join(DE_Results_forHM, ContrastData_forHM, by="x", type="inner")
+metaOutputFDR_wFoldChanges_Top50<-metaOutputFDR_wFoldChanges[c(1:182),]
+metaOutputFDR_wFoldChanges_Top50_byLog2FC<-metaOutputFDR_wFoldChanges_Top50[order(metaOutputFDR_wFoldChanges_Top50$Log2FC_estimate),]
+print(colnames(metaOutputFDR_wFoldChanges_Top50_byLog2FC))
+Log2FC_Subsetted_Matrix <- as.matrix(metaOutputFDR_wFoldChanges_Top50_byLog2FC[,c(9:26)])
+row.names(Log2FC_Subsetted_Matrix) <-metaOutputFDR_wFoldChanges_Top50_byLog2FC$x
+#Making the heatmap:
+tiff(paste("Heatmap_", VariableOfInterest, ".tiff", sep=""), width = 5, height = 20, units = 'in', res = 300, compression = "lzw")
+hm <- pheatmap(Log2FC_Subsetted_Matrix,
+color = colorRampPalette(c("#2166ac", "white", "#b2182b"))(100),
+scale = "none",
+breaks = seq(-1.5, 1.5, length.out = 101),
+cluster_rows = FALSE,
+cluster_cols = TRUE,
+fontsize_row = 8,
+fontsize_col = 8,
+width = 8.5,
+height = 11,
+border_color = NA)
+dev.off()
+hm
+}
+DE_Results_forHM<-DE_Results
+VariableOfInterest<-"SleepDeprivation"
+CoefficientCol<-"Log2FC_estimate"
+PvalueCol<-"pval"
+FDRCol<-"FDR"
+
+ContrastData_forHM<-data.frame(MetaAnalysis_FoldChanges_ForMeta)
+HeatMap(DE_Results_forHM, ContrastData_forHM)
+
+VolcanoPlot<-function(DE_Results, VariableOfInterest, CoefficientCol, PvalueCol, FDRCol){
+#Grabbing the relevant columns of results and making a new dataframe with standardized column names:
+Coefficient<-DE_Results[[CoefficientCol]]
+Pvalue<-DE_Results[[PvalueCol]]
+FDR<-DE_Results[[FDRCol]]
+DE_Results_DF<-cbind.data.frame(Coefficient, Pvalue, FDR)
+#Opening up a .tiff file to store the volcano plot
+tiff(paste("VolcanoPlot_", VariableOfInterest, ".tiff", sep=""), width = 5, height = 5, units = 'in', res = 300, compression = "lzw")
+par(mai=c(1.02, 1,0.9,0.40))
+#Making the volcano plot:
+xmin <- -1
+xmax <- 1
+ymin <- 0
+ymax <- 10
+with(DE_Results_DF, plot(Coefficient, -log10(Pvalue), pch=19, main=paste("Effect of", VariableOfInterest, sep=" "), cex.lab=1.8, cex.main=2, cex=0.6, xlab="Coefficient (log2 fold change)", ylab="-log10(p-value)", xlim=c(xmin,xmax), ylim=c(ymin,ymax)))
+#I've taken the parameters out for setting limits for the x and y axes:
+#,
+#Labeling different subsets of genes in the volcano plot with colors depending on their Log2FC, FDR, or both:
+with(subset(DE_Results_DF, abs(Coefficient)>1), points(Coefficient, -log10(Pvalue), pch=19, col="red", cex=0.6))
+with(subset(DE_Results_DF, FDR<0.05), points(Coefficient, -log10(Pvalue), pch=19, col="green", cex=0.6))
+with(subset(DE_Results_DF, abs(Coefficient)>1 & FDR<0.05), points(Coefficient, -log10(Pvalue), pch=19, col="gold", cex=0.6))
+#I've taken the legend out of this function because it is hard to automate its placement and easy enough to write in the figure legend.
+#legend(-1.5, 7.6, legend=c("Log2FC > 1", "FDR<0.05", "both"), col=c("red", "green", "gold"), pch=19, cex=1)
+#closing the .tiff file connection so that the volcano plot is complete:
+dev.off()
+}
+DE_Results<-data.frame(metaOutputFDR_OrderbyPval)
+#Categorical Variable of Interest:
+VariableOfInterest<-"SleepDeprivation"
+#Name of column containing Log2 Fold Change for the Variable of Interest:
+#Coefficient<-Meta_Results$Log2FC_estimate
+CoefficientCol<-"Log2FC_estimate"
+#Name of column containing p-value for the Variable of Interest:
+PvalueCol<-"pval"
+#Name of column containing FDR for the Variable of Interest:
+FDRCol<-"FDR"
+VolcanoPlot(DE_Results, VariableOfInterest, CoefficientCol, PvalueCol, FDRCol)
+
+
+### Section 6: Gene Set Enrichment Analysis
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/Results/BasicMetaAnalysis")
+metaOutputFDR <- read.csv("metaOutputFDR.csv")
+metaOutputFDR_NoNA <- metaOutputFDR[is.na(metaOutputFDR$Log2FC_estimate)==FALSE,]
+Log2FC <- metaOutputFDR_NoNA$Log2FC_estimate
+names(Log2FC) <- metaOutputFDR_NoNA$X
+F0_Meta_F2_results_AverageTstat_forGSEA_Ranked<-Log2FC[order(Log2FC)]
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/GSEA")
+GMT_ForRats<-gmtPathways("c5withBrainCellTypesFunctionGemmaGeneWeaver_RatOrtholog_HC_ForElaine.txt")
+temp1<-fgsea(GMT_ForRats, F0_Meta_F2_results_AverageTstat_forGSEA_Ranked, nperm=10000, minSize = 10, maxSize = 1000)
+temp1$leadingEdge<-vapply(temp1$leadingEdge, paste, collapse= ",", character(1L))
+write.csv(temp1, "fGSEA_F0_Meta_F2_results_AverageTstat_GMTc5withBrainCellTypesFunctionGemmaGeneWeaver_RatOrtholog_HC_F.csv")
+
+### Section 6: Gene Set Enrichment Analysis NONDIRECTIONAL
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/Results/BasicMetaAnalysis")
+metaOutputFDR <- read.csv("metaOutputFDR.csv")
+metaOutputFDR_NoNA <- metaOutputFDR[is.na(metaOutputFDR$Log2FC_estimate)==FALSE,]
+Log2FC_abs <- metaOutputFDR_NoNA$Log2FC_estimate
+Log2FC_abs <- abs(Log2FC_abs)
+names(Log2FC_abs) <- metaOutputFDR_NoNA$X
+F0_Meta_F2_results_AverageTstat_forGSEA_Ranked<-Log2FC_abs[order(Log2FC_abs)]
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/Results/GSEA")
+GMT_ForRats<-gmtPathways("c5withBrainCellTypesFunctionGemmaGeneWeaver_RatOrtholog_HC_ForElaine.txt")
+
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/Results/newfigs")
+
+temp1<-fgsea(GMT_ForRats, F0_Meta_F2_results_AverageTstat_forGSEA_Ranked, nperm=10000, minSize = 10, maxSize = 1000)
+temp1$leadingEdge<-vapply(temp1$leadingEdge, paste, collapse= ",", character(1L))
+write.csv(temp1, "nondirectional_fGSEA_F0_Meta_F2_results_AverageTstat_GMTc5withBrainCellTypesFunctionGemmaGeneWeaver_RatOrtholog_HC_F.csv")
+# Error in preparePathwaysAndStats(pathways, stats, minSize, maxSize, gseaParam,  : 
+#stats should be named
+#In addition: Warning message:
+#    In fgsea(GMT_ForRats, F0_Meta_F2_results_AverageTstat_forGSEA_Ranked,  :
+#                 You are trying to run fgseaSimple. It is recommended to use fgseaMultilevel. 
+# To run fgseaMultilevel, you need to remove the nperm argument in the fgsea function call.
+
+# attempting the by-hand analysis as code - did not run correctly (collapsedPathways was all NAs?)
+# fgseaRes <- fgsea(GMT_ForRats, F0_Meta_F2_results_AverageTstat_forGSEA_Ranked, maxSize=500)
+# Where examplePathways is: GMT file
+# ExampleRanks: Ranked results that you used in fGSEA
+# collapsedPathways <- collapsePathways(fgseaRes[order(pval)][padj < 0.01], examplePathways, exampleRanks)
+# mainPathways <- fgseaRes[pathway %in% collapsedPathways$mainPathways][
+#     order(-NES), pathway]
+
+
+
+### Section 7: What Matters? Exploring the code to see how our analysis choices affect our results.
 
 ##finding the gene symbols that are repeated.
 #GSE6514
@@ -495,4 +674,42 @@ print (proportion_sig)
 print ("proportion of all genes that had more than one probe per gene symbol: ")
 print (proportion_all)
 
+###Section 7.1: redownloading Gemma data, does preprocessing change matter?
+#GSE6514
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/Repreprocessing Analysis/GSE6514")
+list.files()
+#[1] "analysis.results.txt"        
+#[2] "resultset_ID534215.data.txt"
+#[3] "resultset_ID534216.data.txt"
+ReadingInGemmaDE(ResultSetFileNames = c("resultset_ID534215.data.txt", "resultset_ID534216.data.txt"))
+FilteringDEResults_GoodAnnotation(TempResultsJoined)
+CollapsingDEResults_OneResultPerGene(GSE_ID="GSE6514", TempResultsJoined_NoNA_NoMultimapped, ComparisonsOfInterest=c("6 h SD vs. GSE6514 ctrl", "9 h SD vs. GSE6514 ctrl", "12 h SD vs. GSE6514 ctrl"), NamesOfFoldChangeColumns=list(TempResultsJoined_NoNA_NoMultimapped$FoldChange_6.h, TempResultsJoined_NoNA_NoMultimapped$FoldChange_9.h, TempResultsJoined_NoNA_NoMultimapped$FoldChange_12.h), NamesOfTstatColumns = list(TempResultsJoined_NoNA_NoMultimapped$Tstat_6.h, TempResultsJoined_NoNA_NoMultimapped$Tstat_9.h, TempResultsJoined_NoNA_NoMultimapped$Tstat_12.h))
 
+# # #GSE33491
+# setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/Repreprocessing Analysis/GSE33491")
+# list.files()
+# # # [1] "analysis.results.txt"        
+# # # [2] "resultset_ID480876.data.txt"
+# ReadingInGemmaDE(ResultSetFileNames = c("resultset_ID480876.data.txt"))
+# FilteringDEResults_GoodAnnotation(TempResultsJoined)
+# CollapsingDEResults_OneResultPerGene(GSE_ID="33491", TempResultsJoined_NoNA_NoMultimapped, ComparisonsOfInterest=c("6 h SD vs. GSE33491 ctrl", "9 h SD vs. GSE6514 ctrl", "12 h SD vs. GSE6514 ctrl"), NamesOfFoldChangeColumns=list(TempResultsJoined_NoNA_NoMultimapped$FoldChange_6.h, TempResultsJoined_NoNA_NoMultimapped$FoldChange_9.h, TempResultsJoined_NoNA_NoMultimapped$FoldChange_12.h), NamesOfTstatColumns = list(TempResultsJoined_NoNA_NoMultimapped$Tstat_6.h, TempResultsJoined_NoNA_NoMultimapped$Tstat_9.h, TempResultsJoined_NoNA_NoMultimapped$Tstat_12.h))
+
+#GSE78215
+setwd("~/Library/Mobile Documents/com~apple~CloudDocs/Personal/Professional/UMich Summer Internship/R Coding for Meta Analysis/Repreprocessing Analysis/GSE78215")
+ list.files()
+# [1] "analysis.results.txt"        
+# [2] "resultset_ID534788.data.txt" 
+# [3] "resultset_ID534789.data.txt" 
+# [4] "resultset_ID534790.data.txt"
+ReadingInGemmaDE(ResultSetFileNames = c("resultset_ID534788.data.txt", "resultset_ID534789.data.txt", "resultset_ID534790.data.txt"))
+FilteringDEResults_GoodAnnotation(TempResultsJoined)
+CollapsingDEResults_OneResultPerGene(GSE_ID="GSE6514", TempResultsJoined_NoNA_NoMultimapped, ComparisonsOfInterest=c("6 h SD vs. GSE6514 ctrl", "9 h SD vs. GSE6514 ctrl", "12 h SD vs. GSE6514 ctrl"), NamesOfFoldChangeColumns=list(TempResultsJoined_NoNA_NoMultimapped$FoldChange_6.h, TempResultsJoined_NoNA_NoMultimapped$FoldChange_9.h, TempResultsJoined_NoNA_NoMultimapped$FoldChange_12.h), NamesOfTstatColumns = list(TempResultsJoined_NoNA_NoMultimapped$Tstat_6.h, TempResultsJoined_NoNA_NoMultimapped$Tstat_9.h, TempResultsJoined_NoNA_NoMultimapped$Tstat_12.h))
+ 
+#GSE93041
+#GSE113754
+#GSE128770
+#GSE132076
+#GSE144957
+
+#notes - I'm not sure what's happening with the Gemma data, but I'm getting an issue (I believe that we ran into over the summer, see below)
+# and I'm also seeing that th number of files/what's in them, including comparison types, is different. Not sure why it would be.
